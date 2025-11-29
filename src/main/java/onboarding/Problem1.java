@@ -5,40 +5,48 @@ import java.util.Collections;
 import java.util.List;
 
 public class Problem1 {
-    private static final int EXEPTION_NUMBER = -1;
-    private static final int INDEX_NUMBER_ONE = 1;
-    private static final int INDEX_NUMBER_ZERO = 0;
+    private static final int RIGHT_PAGE_INDEX = 1;
+    private static final int LEFT_PAGE_INDEX = 0;
     private static final int MAX_PAGE_NUMBER = 400;
     private static final int MIN_PAGE_NUMBER = 1;
-    private static final int POBI_WIN_NUMBER = 1;
-    private static final int CRONG_WIN_NUMBER = 2;
-    private static final int NO_WINNER = 0;
-
     private static final int TEN = 10;
     private static final int ZERO = 0;
     private static final int ONE = 1;
     private static final int EVEN_CHECK = 2;
+
+    private enum GameResult {
+        POBI(1), CRONG(2), DRAW(0), EXCEPTION(-1);
+
+        private final int value;
+
+        GameResult(int value) {
+            this.value = value;
+        }
+        public int getValue() {
+            return this.value;
+        }
+    }
 
     public static int solution(List<Integer> pobi, List<Integer> crong) {
         return gameProcess(pobi, crong);
     }
 
     private static int gameProcess(List<Integer> pobi, List<Integer> crong) {
-        if (numberValidator(pobi) == EXEPTION_NUMBER || numberValidator(crong) == EXEPTION_NUMBER) {
-            return EXEPTION_NUMBER;
+        if (numberValidator(pobi) || numberValidator(crong)) {
+            return GameResult.EXCEPTION.getValue();
         }
-        int pobiMaxNumber = processAdd(pobi);
-        int crongMaxNumber = processAdd(crong);
+        int pobiMaxNumber = calculateMaxScore(pobi);
+        int crongMaxNumber = calculateMaxScore(crong);
 
-        return isBigResult(pobiMaxNumber, crongMaxNumber);
+        return determineWinner(pobiMaxNumber, crongMaxNumber);
     }
 
-    private static int processAdd(List<Integer> name) {
+    private static int calculateMaxScore(List<Integer> name) {
         List<Integer> numbers = new ArrayList<>();
-        for (Integer i : name) {
-            int a = addNumbers(i);
-            int b = duplicateNumbers(i);
-            numbers.add(isBigNumber(a, b));
+        for (Integer page : name) {
+            int allAddNumber = addNumbers(page);
+            int allDuplicateNumber = duplicateNumbers(page);
+            numbers.add(getMaxOfTwoNumbers(allAddNumber, allDuplicateNumber));
         }
         return Collections.max(numbers);
     }
@@ -61,30 +69,30 @@ public class Problem1 {
         return sum;
     }
 
-    private static int isBigNumber(int num1, int num2) {
+    private static int getMaxOfTwoNumbers(int num1, int num2) {
         return Math.max(num2, num1);
     }
 
-    private static int isBigResult(int pobiMaxNumber, int crongMaxNumber) {
+    private static int determineWinner(int pobiMaxNumber, int crongMaxNumber) {
         if (pobiMaxNumber > crongMaxNumber) {
-            return POBI_WIN_NUMBER;
+            return GameResult.POBI.getValue();
         }
         if (pobiMaxNumber < crongMaxNumber) {
-            return CRONG_WIN_NUMBER;
+            return GameResult.CRONG.getValue();
         }
-        return NO_WINNER;
+        return GameResult.DRAW.getValue();
     }
 
-    private static int numberValidator(List<Integer> name) {
+    private static boolean numberValidator(List<Integer> name) {
         if (name.contains(MIN_PAGE_NUMBER) || name.contains(MAX_PAGE_NUMBER)) {
-            return EXEPTION_NUMBER;
+            return false;
         }
-        if (name.get(INDEX_NUMBER_ZERO) % EVEN_CHECK == ZERO || name.get(INDEX_NUMBER_ONE) % EVEN_CHECK != ZERO) {
-            return EXEPTION_NUMBER;
+        if (name.get(LEFT_PAGE_INDEX) % EVEN_CHECK == ZERO || name.get(RIGHT_PAGE_INDEX) % EVEN_CHECK != ZERO) {
+            return false;
         }
-        if (name.get(INDEX_NUMBER_ONE) - name.get(INDEX_NUMBER_ZERO) != ONE) {
-            return EXEPTION_NUMBER;
+        if (name.get(RIGHT_PAGE_INDEX) - name.get(LEFT_PAGE_INDEX) != ONE) {
+            return false;
         }
-        return ZERO;
+        return true;
     }
 }
