@@ -4,15 +4,28 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class Problem1 {
+public class Problem1 {
+    private static final int EXEPTION_NUMBER = -1;
+    private static final int INDEX_NUMBER_ONE = 1;
+    private static final int INDEX_NUMBER_ZERO = 0;
+    private static final int MAX_PAGE_NUMBER = 400;
+    private static final int MIN_PAGE_NUMBER = 1;
+    private static final int POBI_WIN_NUMBER = 1;
+    private static final int CRONG_WIN_NUMBER = 2;
+    private static final int NO_WINNER = 0;
+
+    private static final int TEN = 10;
+    private static final int ZERO = 0;
+    private static final int ONE = 1;
+    private static final int EVEN_CHECK = 2;
 
     public static int solution(List<Integer> pobi, List<Integer> crong) {
         return gameProcess(pobi, crong);
     }
 
     private static int gameProcess(List<Integer> pobi, List<Integer> crong) {
-        if(numberValidator(pobi) == -1 || numberValidator(crong) == -1) {
-            return -1;
+        if(numberValidator(pobi) == EXEPTION_NUMBER || numberValidator(crong) == EXEPTION_NUMBER) {
+            return EXEPTION_NUMBER;
         }
         int pobiMaxNumber = processAdd(pobi);
         int crongMaxNumber = processAdd(crong);
@@ -30,28 +43,19 @@ class Problem1 {
         return Collections.max(numbers);
     }
     private static int addNumbers(int pageNumber) {
-        int sum =0;
-        int b = 0;
-        while (pageNumber > 0) {
-            sum += pageNumber % 10;
-            pageNumber /= 10;
+        int sum = ZERO;
+        while (pageNumber > ZERO) {
+            sum += pageNumber % TEN;
+            pageNumber /= TEN;
         }
-
-        if(b < sum){
-            b = sum;
-        }
-        return b;
+        return sum;
     }
     private static int duplicateNumbers(int pageNumber) {
-        List<Integer> numbers = new ArrayList<>();
-        int sum = 1;
+        int sum = ONE;
 
-        while (pageNumber > 0) {
-            numbers.add(pageNumber % 10);
-            pageNumber /= 10;
-        }
-        for(int i :  numbers){
-            sum = sum * i;
+        while (pageNumber > ZERO) {
+            sum *= pageNumber % TEN;
+            pageNumber /= TEN;
         }
         return sum;
     }
@@ -60,25 +64,24 @@ class Problem1 {
     }
     private static int isBigResult(int pobiMaxNumber, int crongMaxNumber) {
         if(pobiMaxNumber > crongMaxNumber){
-            return 1;
+            return POBI_WIN_NUMBER;
         }
         if(pobiMaxNumber < crongMaxNumber){
-            return 2;
+            return CRONG_WIN_NUMBER;
         }
-        return 0;
+        return NO_WINNER;
     }
-
     private static int numberValidator(List<Integer> name) {
-        if(name.contains(1) ||  name.contains(400) ){
-            return -1;
+        if(name.contains(MIN_PAGE_NUMBER) ||  name.contains(MAX_PAGE_NUMBER) ){
+            return EXEPTION_NUMBER;
         }
-        if(name.get(0) % 2 == 0 || name.get(1) % 2 != 0){
-            return -1;
+        if(name.get(INDEX_NUMBER_ZERO) % EVEN_CHECK == ZERO || name.get(INDEX_NUMBER_ONE) % EVEN_CHECK != ZERO){
+            return EXEPTION_NUMBER;
         }
-        if(name.get(1)-name.get(0) != 1){
-            return -1;
+        if(name.get(INDEX_NUMBER_ONE)-name.get(INDEX_NUMBER_ZERO) != ONE){
+            return EXEPTION_NUMBER;
         }
 
-        return 0;
+        return ZERO;
     }
 }
