@@ -32,7 +32,7 @@ public class Problem1 {
     }
 
     private static int gameProcess(List<Integer> pobi, List<Integer> crong) {
-        if (numberValidator(pobi) || numberValidator(crong)) {
+        if (!isInvalidPages(pobi) || !isInvalidPages(crong)) {
             return GameResult.EXCEPTION.getValue();
         }
         int pobiMaxNumber = calculateMaxScore(pobi);
@@ -83,7 +83,7 @@ public class Problem1 {
         return GameResult.DRAW.getValue();
     }
 
-    private static boolean numberValidator(List<Integer> name) {
+    private static boolean isInvalidPages(List<Integer> name) {
         if (name.contains(MIN_PAGE_NUMBER) || name.contains(MAX_PAGE_NUMBER)) {
             return false;
         }
